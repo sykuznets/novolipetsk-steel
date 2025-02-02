@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <include file="changelog/01-create-table-entities.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/02-create-table-entity_templates.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/03-create-table-entity_values.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/04-create-table-records.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/05-create-table-limits.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/06-create-table-values.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/07-create-table-forms.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/08-update-entities.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>
