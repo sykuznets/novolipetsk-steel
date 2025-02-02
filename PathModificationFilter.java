@@ -73,7 +73,7 @@ public class PathModificationFilter implements GatewayFilterFactory<RouteConfig>
                         return chain.filter(createModifiedExchange(modifiedPath, exchange));
                     })
                     .onErrorResume(
-							PermissionException.class,
+			    PermissionException.class,
                             ex -> handlePermissionException(userId, exchange, ex)
                     );
         };
@@ -85,7 +85,7 @@ public class PathModificationFilter implements GatewayFilterFactory<RouteConfig>
     ) {
         return exchange.mutate()
                 .request(exchange.getRequest()
-						.mutate()
+			.mutate()
                         .uri(UriComponentsBuilder.fromUriString(modifiedPath)
                                 .queryParam(EXPAND_QUERY_PARAM, Set.of("functionalArea"))
                                 .build()
