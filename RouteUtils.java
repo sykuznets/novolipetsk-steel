@@ -22,7 +22,7 @@ import static org.springframework.util.StringUtils.isEmpty;
 
 @UtilityClass
 @Slf4j
-public class RequestUtils {
+public class RouteUtils {
 
     public static String buildRequestPath(
             ServerWebExchange exchange,
@@ -36,6 +36,7 @@ public class RequestUtils {
         String finalPathWithCriteria = addCriteriaToPath(pathWithQuery, createCriteriaMap(criteria));
 
         log.debug("Generated request path: '{}'", finalPathWithCriteria);
+        
         return finalPathWithCriteria;
     }
 
@@ -86,4 +87,5 @@ public class RequestUtils {
         dataBuffer.read(content);
         return content;
     }
+    
 }
