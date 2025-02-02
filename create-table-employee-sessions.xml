@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="rel-1.0.0-01" author="kuznets_sy">
+        <createTable tableName="employee_sessions">
+            <column name="session_id" type="bigint" autoIncrement="true" startWith="1">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="session_year" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="template_reference_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manager_reference_id" type="character varying(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organization_id" type="character varying(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="department_reference_id" type="character varying(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="position_reference_id" type="character varying(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="employee_count" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="last_updated_timestamp" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_session_completed" type="bool">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_session_deleted" type="bool">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="employee_sessions"
+                baseColumnNames="template_reference_id"
+                referencedTableName="session_templates"
+                referencedColumnNames="id"
+                constraintName="fk_employee_sessions_template_reference_id"/>
+
+        <sql>
+            CREATE UNIQUE INDEX IF NOT EXISTS
+                unique_employee_sessions_template_manager_deleted
+            ON employee_sessions(template_reference_id, manager_reference_id, is_session_deleted)
+            WHERE is_session_deleted IN (true, false);
+        </sql>
+
+        <sql>
+            CREATE TRIGGER tr_insert_update_employee_session_last_updated_timestamp
+            BEFORE INSERT OR UPDATE ON employee_sessions
+            FOR EACH ROW
+            EXECUTE PROCEDURE set_last_updated_timestamp();
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
