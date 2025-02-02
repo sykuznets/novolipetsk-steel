@@ -1,5 +1,6 @@
-This repository contains examples of generalized classes that I use across multiple projects. 
-These classes are intended for read-only purposes. Inside, you'll find examples of:
+This repository contains examples of generalized classes that I have used across multiple projects. 
+These classes have been refactored and adjusted to be more generic and suitable for public sharing. 
+It is intended for read-only purposes. Inside, you will find examples of:
 
   - Reactive programming
   - DGS (GraphQL) framework
