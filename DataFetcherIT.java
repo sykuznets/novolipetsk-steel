@@ -23,7 +23,7 @@ class DataFetcherIT extends AbstractFetcherIT implements MockSecurityContext {
     private GenericRepositoryData repositoryData;
     @Autowired
     private GenericMapper mapper;
-
+    
     private GenericObject genericObject;
 
     @BeforeEach
@@ -64,7 +64,6 @@ class DataFetcherIT extends AbstractFetcherIT implements MockSecurityContext {
             final var actualResult = queryExecutor.executeAndExtractJsonPath(
                     query, "data.fetchObject"
             );
-
             validateObjectFields(actualResult, expectedObject);
         }, UserInfo.builder()
                 .profileId(1L)
@@ -86,4 +85,5 @@ class DataFetcherIT extends AbstractFetcherIT implements MockSecurityContext {
                         "https://s3.example.com/" + expectedObject.getPictureUrl()
                 );
     }
+    
 }
