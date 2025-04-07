@@ -56,38 +56,43 @@ public class ResponseModificationFilter implements GatewayFilter {
 
         if (exchange.getAttribute(RESPONSE_PROCESSOR) instanceof ResponseProcessor responseProcessor) {
             ServerHttpResponseDecorator decoratedResponse = createResponseDecorator(
-                    exchange.getResponse(),
-                    exchange.getAttribute(USER_ROLES),
-                    responseProcessor::process
+                exchange.getResponse(),
+                exchange.getAttribute(USER_ROLES),
+                responseProcessor::process
             );
 
-            return chain.filter(exchange.mutate()
+            return chain.filter(
+                exchange.mutate()
                     .response(decoratedResponse)
-                    .build());
+                    .build()
+            );
         } else {
             throw new IllegalArgumentException("Invalid or missing response processor");
         }
     }
 
     private ServerHttpResponseDecorator createResponseDecorator(
-            ServerHttpResponse originalResponse,
-            List<UserRoleDto> roles,
-            BiConsumer<Set<String>, Map<String, Object>> responseProcessor
+        ServerHttpResponse originalResponse,
+        List<UserRoleDto> roles,
+        BiConsumer<Set<String>, Map<String, Object>> responseProcessor
     ) {
         return new ServerHttpResponseDecorator(originalResponse) {
             @Override
             @Nonnull
             public Mono<Void> writeWith(@Nonnull Publisher<? extends DataBuffer> body) {
                 log.debug("Starting to modify response body...");
+                
                 return join(body).flatMap(dataBuffer -> {
                     byte[] originalBytes = extractBytesFromDataBuffer(dataBuffer);
                     release(dataBuffer);
+
                     try {
                         Set<String> permissions = getMatchedPermissionsFromRoles(roles);
                         log.debug("Matched permissions: '{}'", permissions);
 
                         Map<String, Object> responseMap = objectMapper.readValue(
-                                originalBytes, new TypeReference<>() {}
+                            originalBytes,
+                            new TypeReference<>() {}
                         );
 
                         responseProcessor.accept(permissions, responseMap);
@@ -99,14 +104,14 @@ public class ResponseModificationFilter implements GatewayFilter {
 
                         log.debug("Response modified successfully, new length: '{}'", modifiedBytes.length);
                         return super.writeWith(Mono.just(modifiedBuffer));
+
                     } catch (Exception e) {
                         return Mono.error(new ResponseModificationException(
-                                "Failed to modify response body: " + e.getMessage())
-                        );
+                            "Failed to modify response body: " + e.getMessage()
+                        ));
                     }
                 });
             }
         };
     }
-
 }
