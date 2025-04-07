@@ -2,10 +2,12 @@
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
     <changeSet id="rel-1.0.0-01" author="kuznets_sy">
+
         <createTable tableName="sessions">
             <column name="session_id" type="bigint" autoIncrement="true" startWith="1">
                 <constraints nullable="false" unique="true" primaryKey="true"/>
@@ -51,7 +53,7 @@
 
         <sql>
             CREATE UNIQUE INDEX IF NOT EXISTS unique_sessions_template_manager_deleted
-            ON sessions(template_reference_id, manager_reference_id, is_session_deleted)
+            ON sessions (template_reference_id, manager_reference_id, is_session_deleted)
             WHERE is_session_deleted IN (true, false);
         </sql>
 
@@ -61,6 +63,7 @@
             FOR EACH ROW
             EXECUTE PROCEDURE set_last_updated_timestamp();
         </sql>
+
     </changeSet>
 
 </databaseChangeLog>
