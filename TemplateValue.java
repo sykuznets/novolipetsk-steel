@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(
-        name = "template_values",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uq_template_id_manager_code",
-                columnNames = {"template_id", "manager_code"}
-        )
+    name = "template_values",
+    uniqueConstraints = @UniqueConstraint(
+        name = "uq_template_id_manager_code",
+        columnNames = {"template_id", "manager_code"}
+    )
 )
 @NoArgsConstructor
 @Setter
@@ -29,10 +29,10 @@ public class TemplateValue {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "template_id",
-            referencedColumnName = "id",
-            nullable = false,
-            foreignKey = @ForeignKey(name = "fk_template_values_templates")
+        name = "template_id",
+        referencedColumnName = "id",
+        nullable = false,
+        foreignKey = @ForeignKey(name = "fk_template_values_templates")
     )
     private Template template;
 
@@ -44,5 +44,4 @@ public class TemplateValue {
 
     @Column(name = "order_number", nullable = false)
     private Integer orderNumber;
-        
 }
