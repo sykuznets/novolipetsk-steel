@@ -44,4 +44,5 @@ public class TemplateValue {
 
     @Column(name = "order_number", nullable = false)
     private Integer orderNumber;
+    
 }
