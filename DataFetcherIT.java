@@ -23,7 +23,7 @@ class DataFetcherIT extends AbstractFetcherIT implements MockSecurityContext {
     private GenericRepositoryData repositoryData;
     @Autowired
     private GenericMapper mapper;
-    
+
     private GenericObject genericObject;
 
     @BeforeEach
@@ -35,55 +35,48 @@ class DataFetcherIT extends AbstractFetcherIT implements MockSecurityContext {
     @TestFactory
     Collection<DynamicTest> shouldReturnValidObject() {
         @Language("GraphQL")
-        var query = """
-                query FetchObject {
-                    fetchObject(id: "1", timeZoneOffsetInMinutes: 0) {
-                        id,
-                        source,
-                        externalSourceUrl,
-                        content,
-                        pictureUrl,
-                        title,
-                        published,
-                        viewed
-                    }
+        String query = """
+            query FetchObject {
+                fetchObject(id: "1", timeZoneOffsetInMinutes: 0) {
+                    id
+                    source
+                    externalSourceUrl
+                    content
+                    pictureUrl
+                    title
+                    published
+                    viewed
                 }
+            }
         """;
 
         return List.of(dynamicTest(
-                "Request object should return a valid result",
-                () -> validateObject(query, genericObject)
+            "Request object should return a valid result",
+            () -> validateObject(query, genericObject)
         ));
     }
 
-    private void validateObject(
-            @Language("GraphQL") String query,
-            GenericObject expectedObject
-    ) {
+    private void validateObject(@Language("GraphQL") String query, GenericObject expectedObject) {
         proxySecurityContext(userInfo -> {
-            final var actualResult = queryExecutor.executeAndExtractJsonPath(
-                    query, "data.fetchObject"
+            var actualResult = queryExecutor.executeAndExtractJsonPath(
+                query, "data.fetchObject"
             );
             validateObjectFields(actualResult, expectedObject);
         }, UserInfo.builder()
-                .profileId(1L)
-                .build());
+            .profileId(1L)
+            .build());
     }
 
-    // Validates fields of the GenericObject against the expected object
     private void validateObjectFields(Object result, GenericObject expectedObject) {
         assertThat(result)
-                .extracting(
-                        "title",
-                        "viewed",
-                        "pictureUrl"
-                )
-                .as("Object fields validation")
-                .containsExactly(
-                        expectedObject.getTitle(),
-                        expectedObject.getViewed(),
-                        "https://s3.example.com/" + expectedObject.getPictureUrl()
-                );
+            .extracting("title", "viewed", "pictureUrl")
+            .as("Object fields validation")
+            .containsExactly(
+                expectedObject.getTitle(),
+                expectedObject.getViewed(),
+                "https://s3.example.com/" + expectedObject.getPictureUrl()
+            );
     }
     
 }
+
