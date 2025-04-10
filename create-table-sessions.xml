@@ -7,7 +7,6 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
     <changeSet id="rel-1.0.0-01" author="kuznets_sy">
-
         <createTable tableName="sessions">
             <column name="session_id" type="bigint" autoIncrement="true" startWith="1">
                 <constraints nullable="false" unique="true" primaryKey="true"/>
@@ -63,7 +62,6 @@
             FOR EACH ROW
             EXECUTE PROCEDURE set_last_updated_timestamp();
         </sql>
-
     </changeSet>
 
 </databaseChangeLog>
