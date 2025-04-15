@@ -44,48 +44,34 @@ public class PathModificationFilter implements GatewayFilterFactory<RouteConfig>
 
     @Override
     public GatewayFilter apply(RouteConfig config) {
-        return (exchange, chain) -> {
-            String userId = getUserId(exchange);
-            if (Objects.isNull(userId)) {
-                return chain.filter(exchange);
-            }
-
-            return roleClient.retrieveUserRoles(userId, applicationConfig.getRoleBasedPermissions().getUser())
-                .flatMap(userRoles -> {
-                    if (userRoles.isEmpty()) {
-                        return Mono.error(new PermissionException(
-                            String.format("User '%s' has no roles assigned", userId)
-                        ));
+        return (exchange, chain) -> Mono.justOrEmpty(getUserId(exchange))
+            .flatMap(userId -> roleClient.retrieveUserRoles(userId, applicationConfig.getRoleBasedPermissions().getUser())
+                .flatMap(roles -> {
+                    if (roles.isEmpty()) {
+                        return Mono.error(new PermissionException("User '" + userId + "' has no roles assigned"));
                     }
-                    log.info("Roles retrieved for user '{}': '{}'", userId, userRoles);
 
-                    List<FilterDto> filters = filterService.getFiltersByPermission(config.permission(), userRoles);
+                    var filters = filterService.getFiltersByPermission(config.permission(), roles);
                     if (filters.isEmpty()) {
-                        log.info("No filters found for user '{}'", userId);
                         exchange.getAttributes().put(SKIP_RESPONSE_MODIFICATION, true);
                         return chain.filter(exchange);
                     }
 
-                    exchange.getAttributes().put(USER_ROLES, userRoles);
+                    exchange.getAttributes().put(USER_ROLES, roles);
                     exchange.getAttributes().put(RESPONSE_PROCESSOR, new PageResponseProcessor());
 
-                    String modifiedPath = buildModifiedPath(exchange, applicationConfig.getMboLibrary(), filters);
-                    return chain.filter(createModifiedExchange(modifiedPath, exchange));
-                })
-                .onErrorResume(PermissionException.class, ex -> handlePermissionException(userId, exchange, ex));
-        };
-    }
+                    var uri = UriComponentsBuilder.fromUriString(
+                        buildModifiedPath(exchange, applicationConfig.getMboLibrary(), filters)
+                    ).build().toUri();
 
-    private ServerWebExchange createModifiedExchange(String modifiedPath, ServerWebExchange exchange) {
-        return exchange.mutate()
-            .request(exchange.getRequest()
-                .mutate()
-                .uri(UriComponentsBuilder.fromUriString(modifiedPath)
-                    .queryParam(EXPAND_QUERY_PARAM, Set.of("functionalArea"))
-                    .build()
-                    .toUri())
-                .build())
-            .build();
+                    var updatedExchange = exchange.mutate()
+                        .request(exchange.getRequest().mutate().uri(uri).build())
+                        .build();
+
+                    return chain.filter(updatedExchange);
+                }))
+            .switchIfEmpty(chain.filter(exchange))
+            .onErrorResume(PermissionException.class, ex -> handlePermissionException(getUserId(exchange), exchange, ex));
     }
     
 }
