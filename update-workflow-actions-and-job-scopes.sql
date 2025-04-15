@@ -18,10 +18,3 @@ INSERT INTO workflow_actions (action_code, action_name) VALUES
     ('implement', 'Implements')
 ON CONFLICT (action_name)
 DO UPDATE SET action_code = EXCLUDED.action_code;
-
--- Insert a set of job scopes.
-INSERT INTO job_scopes (scope_code, scope_name) VALUES
-    ('enterprise', 'Enterprise'),
-    ('department', 'Department'),
-    ('division', 'Division'),
-    ('direction', 'Section');
