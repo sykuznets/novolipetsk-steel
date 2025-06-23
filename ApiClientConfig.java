@@ -48,4 +48,5 @@ public class ApiClientConfig {
         factory.setReadTimeout(serviceConfig.getReadTimeout());
         return factory;
     }
+    
 }
