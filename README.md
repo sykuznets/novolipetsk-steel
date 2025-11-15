@@ -6,6 +6,7 @@ It is intended for read-only purposes. Inside, you will find examples of:
   - DGS (GraphQL) framework
   - Java Persistence API
   - Liquibase scripts
+  - Hibernate
   - DTO (Data Transfer Objects)
   - JPA (Java Persistence API)
   - Spring Framework
