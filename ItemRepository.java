@@ -46,15 +46,6 @@ public interface ItemRepository
         """)
     List<Record> findItemsForAdmin(@Param("codes") List<Integer> codes);
 
-    @Query(nativeQuery = true, value = """
-        SELECT i.*
-        FROM items i
-        WHERE (i.roles ILIKE '%admin%' OR i.roles IS NULL)
-          AND i.codes IS NULL
-        ORDER BY i.priority, i.created DESC
-        LIMIT 10
-        """)
-    List<Record> findItemsForAdminWithNoCodes();
-
 }
+
 
