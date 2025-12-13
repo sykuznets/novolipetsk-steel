@@ -33,50 +33,6 @@ public interface RoleProfileMapper {
             ProfileStatus status
     );
 
-    @Mapping(target = "id", ignore = true)
-    RoleTaskAction toTaskAction(
-            RoleProfile profile,
-            Action action,
-            RoleTaskRelation taskRelation
-    );
-
-    @Mapping(target = "id", ignore = true)
-    RoleScope toScope(
-            RoleProfile profile,
-            RoleType roleType,
-            Scope scope,
-            Discipline discipline
-    );
-
-    @Mapping(target = "id", ignore = true)
-    ProfileApprover toApprover(
-            RoleProfile profile,
-            ApproverType approverType,
-            User approver
-    );
-
-    @Mapping(target = "id", ignore = true)
-    ProfileEducation toEducation(
-            RoleProfile profile,
-            EducationLevel level,
-            Long yearsRequired
-    );
-
-    @Mapping(target = "id", ignore = true)
-    ProfileExperience toExperience(
-            RoleProfile profile,
-            String experienceType,
-            String domain,
-            String duration
-    );
-
-    @Mapping(target = "id", ignore = true)
-    ProfileLanguage toLanguageProficiency(
-            RoleProfile profile,
-            LanguageProficiency proficiency,
-            String languageType
-    );
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "taskActions", ignore = true)
