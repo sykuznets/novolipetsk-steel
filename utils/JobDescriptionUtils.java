@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class JobDescriptionUtils {
+public class RelationUtils {
 
     public static <T> void resetRelation(
             Supplier<List<T>> getter,
