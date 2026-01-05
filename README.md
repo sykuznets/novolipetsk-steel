@@ -7,7 +7,7 @@ It is intended for read-only purposes. Inside, you will find examples of:
   - Java Persistence API
   - Liquibase scripts
   - Hibernate
-  - DTO (Data Transfer Objects)
-  - JPA (Java Persistence API)
+  - Data Transfer Objects
+  - Java Persistence API
   - Spring Framework
   - Kafka
