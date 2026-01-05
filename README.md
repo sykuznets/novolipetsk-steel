@@ -3,7 +3,7 @@ They’ve been refactored and adjusted to be more generic and suitable for publi
 It is intended for read-only purposes. Inside, you will find examples of:
 
   - Reactive programming
-  - DGS (GraphQL) framework
+  - GraphQL
   - Java Persistence API
   - Liquibase scripts
   - Hibernate
