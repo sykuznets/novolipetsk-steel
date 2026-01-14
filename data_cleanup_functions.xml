@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="cleanup-2024-01" author="system">
+        <comment>
+            Database cleanup functions: remove records older than retention period
+        </comment>
+
+        <sql splitStatements="false" stripComments="false"><![CDATA[
+            -- Remove child records whose parent records are older than the retention period
+            CREATE OR REPLACE FUNCTION cleanup_child_records()
+            RETURNS void AS $$
+            BEGIN
+                DELETE FROM child_entities c
+                WHERE EXISTS (
+                    SELECT 1
+                    FROM parent_entities p
+                    WHERE c.parent_id = p.id
+                      AND p.created_at < (CURRENT_DATE - INTERVAL '12 months')
+                );
+            END;
+            $$ LANGUAGE plpgsql;
+
+            -- Remove parent records older than the retention period
+            CREATE OR REPLACE FUNCTION cleanup_parent_records()
+            RETURNS void AS $$
+            BEGIN
+                DELETE FROM parent_entities
+                WHERE created_at < (CURRENT_DATE - INTERVAL '12 months');
+            END;
+            $$ LANGUAGE plpgsql;
+
+            -- Orchestrator function to run all cleanup steps safely
+            CREATE OR REPLACE FUNCTION run_data_cleanup()
+            RETURNS void AS $$
+            BEGIN
+                -- Cleanup child records
+                BEGIN
+                    PERFORM cleanup_child_records();
+                EXCEPTION WHEN OTHERS THEN
+                    RAISE NOTICE 'cleanup_child_records failed: %', SQLERRM;
+                END;
+
+                -- Cleanup parent records
+                BEGIN
+                    PERFORM cleanup_parent_records();
+                EXCEPTION WHEN OTHERS THEN
+                    RAISE NOTICE 'cleanup_parent_records failed: %', SQLERRM;
+                END;
+            END;
+            $$ LANGUAGE plpgsql;
+        ]]></sql>
+    </changeSet>
+
+</databaseChangeLog>
