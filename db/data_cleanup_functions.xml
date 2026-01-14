@@ -7,10 +7,7 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
     <changeSet id="cleanup-2024-01" author="system">
-        <comment>
-            Database cleanup functions: remove records older than retention period
-        </comment>
-
+        <comment>Database cleanup functions: remove records older than retention period</comment>
         <sql splitStatements="false" stripComments="false"><![CDATA[
             -- Remove child records whose parent records are older than the retention period
             CREATE OR REPLACE FUNCTION cleanup_child_records()
