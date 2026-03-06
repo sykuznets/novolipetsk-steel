@@ -37,7 +37,6 @@ public class SectionRetryServiceImpl implements SectionRetryService {
             OptimisticLockingFailureException exception,
             Section section
     ) {
-
         long id = section.getId();
 
         var context = RetrySynchronizationManager.getContext();
