@@ -52,7 +52,7 @@ public class SectionRetryServiceImpl implements SectionRetryService {
 
         log.error(
                 "Failed to update entity after {} retries due to optimistic locking. " +
-                "entity={}, id={}, expectedVersion={}, dbVersion={}",
+                "entity = {}, id = {}, inputVersion = {}, dbVersion = {}",
                 (retries != null ? retries : -1),
                 Section.class.getSimpleName(),
                 id,
