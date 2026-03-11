@@ -24,7 +24,13 @@ public class SectionRetryServiceImpl implements SectionRetryService {
     @Override
     @Retryable(
             retryFor = OptimisticLockingFailureException.class,
-            backoff = @Backoff(delay = 50L, multiplier = 2)
+            maxAttempts = 8,
+            backoff = @Backoff(
+                    delay = 300L,
+                    multiplier = 2,
+                    maxDelay = 6000L,
+                    random = true
+            )
     )
     public Section calculateSection(Section section) {
         long id = section.getId();
