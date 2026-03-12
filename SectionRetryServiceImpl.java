@@ -44,9 +44,8 @@ public class SectionRetryServiceImpl implements SectionRetryService {
             Section section
     ) {
         long id = section.getId();
-
-        var context = RetrySynchronizationManager.getContext();
-        Integer retries = (context != null) ? context.getRetryCount() : null;
+        var ctx = RetrySynchronizationManager.getContext();
+        Integer retries = (ctx != null) ? ctx.getRetryCount() : null;
 
         Long dbVersion = transactionalService.loadCurrentVersion(id);
 
