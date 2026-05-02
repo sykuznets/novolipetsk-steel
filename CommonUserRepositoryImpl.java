@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class CommonUserRepositoryImpl implements CommonUserRepositoryCustom {
+public class CommonRepositoryImpl implements CommonRepositoryCustom {
 
     private final EntityManager entityManager;
 
