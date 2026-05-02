@@ -72,29 +72,6 @@ public class CommonRepositoryImpl implements CommonRepositoryCustom {
         return new PageImpl<>(userIdList, pageableRequest, totalCount);
     }
 
-    @Override
-    public List<User> fetchAllByIdsWithGraph(Collection<String> ids, List<String> fetchPaths) {
-        if (isEmpty(ids)) {
-            return List.of();
-        }
-
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-        Root<User> userRoot = criteriaQuery.from(User.class);
-        criteriaQuery.select(userRoot).where(userRoot.get(User_.empId).in(ids));
-
-        TypedQuery<User> typedQuery = entityManager.createQuery(criteriaQuery);
-
-        if (!isEmpty(fetchPaths)) {
-            EntityGraph<User> entityGraph = entityManager.createEntityGraph(User.class);
-            fetchPaths.forEach(entityGraph::addAttributeNodes);
-            typedQuery.setHint(SpecHints.HINT_SPEC_LOAD_GRAPH, entityGraph);
-        }
-
-        return typedQuery.getResultList();
-    }
-
     private Path<?> resolveJoinPath(
             String propertyPath,
             Root<User> userRoot,
@@ -141,4 +118,5 @@ public class CommonRepositoryImpl implements CommonRepositoryCustom {
         orderList.add(criteriaBuilder.asc(userRoot.get(User_.empId)));
         return orderList;
     }
+    
 }
